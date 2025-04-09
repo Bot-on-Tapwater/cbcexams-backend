@@ -1,0 +1,1 @@
+psql -U capeatlas -d cbcbackend -f ~/resources.sql
