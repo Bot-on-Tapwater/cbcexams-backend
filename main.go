@@ -53,6 +53,12 @@ func main() {
 	/* Register Routes */
 	routes.AuthRoutes(r, db)
 	routes.UsersRoutes(r, db)
+	routes.CategoriesRoutes(r)
+
+    /* Print all registered routes */
+    for _, route := range r.Routes() {
+        log.Printf("Method: %s | Path: %s", route.Method, route.Path)
+    }
 
 	/* Specify the port to run your application and start server */
 	port := os.Getenv("PORT")

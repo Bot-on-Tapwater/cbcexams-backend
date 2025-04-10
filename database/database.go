@@ -24,7 +24,7 @@ func InitializeDatabase() {
 
 	/* Run migrations */
 	fmt.Println("Running database migrations...")
-	err := db.AutoMigrate(&models.WebCrawlerResource{}, &models.User{}) // Add more models here
+	err := db.AutoMigrate(&models.User{}) // Add more models here
 	if err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}

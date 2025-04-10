@@ -27,11 +27,11 @@ import (
 type WebCrawlerResource struct {
 	ID                      uuid.UUID      `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
 	ParentURL               string         `gorm:"type:text"`
-	GoogleDriveDownloadLink string         `gorm:"type:text;uniqueIndex:idx_google_drive_download_link"`
+	GoogleDriveDownloadLink string         `gorm:"type:text;uniqueIndex:web_crawler_resources_google_drive_download_link_key"`
 	Name                    string         `gorm:"type:text"`
 	RelativePath            string         `gorm:"type:text"`
 	ParentDirectory         string         `gorm:"type:text"`
-	DjangoRelativePath      string         `gorm:"type:text;uniqueIndex:idx_django_relative_path"`
+	DjangoRelativePath      string         `gorm:"type:text;uniqueIndex:web_crawler_resources_django_relative_path_key"`
 	GoogleCloudStorageLink  string         `gorm:"type:text"`
 	CreatedAt               time.Time      `gorm:"not null"`
 	Categories              pq.StringArray `gorm:"type:varchar(255)[]"` // Requires github.com/lib/pq
