@@ -24,7 +24,7 @@ var JWT_SECRET = os.Getenv("JWT_SECRET")
 func GenerateJWT(userID uuid.UUID) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": userID,
-		"exp": time.Now().Add(time.Hour * 72).Unix(), /* 3 days expiry */
+		"exp":     time.Now().Add(time.Hour * 72).Unix(), /* 3 days expiry */
 	})
 
 	return token.SignedString([]byte(JWT_SECRET))
@@ -32,7 +32,7 @@ func GenerateJWT(userID uuid.UUID) (string, error) {
 
 // ValidateJWT validates a given JWT token string and returns the parsed token
 // if it is valid, or an error if the validation fails.
-// 
+//
 // Parameters:
 //   - tokenString: The JWT token string to be validated.
 //
@@ -43,7 +43,7 @@ func GenerateJWT(userID uuid.UUID) (string, error) {
 // The function checks if the token's signing method is HMAC and uses the
 // predefined JWT_SECRET to validate the token's signature.
 func ValidateJWT(tokenString string) (*jwt.Token, error) {
-	return jwt.Parse(tokenString, func(token *jwt.Token) (interface {}, error) {
+	return jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}

@@ -17,3 +17,6 @@ pg_dump -U capeatlas -d cbcbackend -t web_crawler_resources -f resources.sql
 pg_dump -U capeatlas -d cbcbackend \
   --file="web_crawler_backup_$(date +'%A_%d_%B_%Y_at_%I-%M%p').sql" \
   -t web_crawler_resources
+
+-- Not SQL command, it's a GoLang command for linting
+gofmt -s -w .

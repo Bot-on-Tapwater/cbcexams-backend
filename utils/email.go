@@ -31,14 +31,14 @@ func SendPasswordResetEmail(email, token string) error {
 	body := fmt.Sprintf("Click <a href='%s'>here</a> to reset your password. Link expires in 1 hour.", resetLink)
 
 	/* Run the email-sending process in a Goroutine */
-	 go func() {
-        if err := SendEmail(email, "Password Reset Request", body); err != nil {
-            fmt.Printf("Failed to send password reset email: %s\n", err)
-        }
-    }()
+	go func() {
+		if err := SendEmail(email, "Password Reset Request", body); err != nil {
+			fmt.Printf("Failed to send password reset email: %s\n", err)
+		}
+	}()
 
 	/* Return immediately without waiting for the email to be sent */
-	return nil	
+	return nil
 }
 
 func SendEmail(to, subject, body string) error {
@@ -56,16 +56,16 @@ func SendEmail(to, subject, body string) error {
 	}
 
 	d := gomail.NewDialer(
-        os.Getenv("SMTP_HOST"),
-        port,
-        os.Getenv("SMTP_USER"),
-        os.Getenv("SMTP_PASS"),
-    )
+		os.Getenv("SMTP_HOST"),
+		port,
+		os.Getenv("SMTP_USER"),
+		os.Getenv("SMTP_PASS"),
+	)
 
-    /* Attempt to send the email and log any errors */
-    if err := d.DialAndSend(m); err != nil {
-        fmt.Printf("Failed to send email: %s\n", err) // Log the error
-        return fmt.Errorf("failed to send email: %v", err)
-    }
-    return nil
+	/* Attempt to send the email and log any errors */
+	if err := d.DialAndSend(m); err != nil {
+		fmt.Printf("Failed to send email: %s\n", err) // Log the error
+		return fmt.Errorf("failed to send email: %v", err)
+	}
+	return nil
 }

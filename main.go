@@ -38,6 +38,9 @@ func main() {
 	/* Connect to the database */
 	db := config.ConnectDB() // Ensure this function returns *gorm.DB
 
+	/* Initialize the EAT timezone */
+	config.InitTimezone()
+
 	/*
 	   Only run migrations once
 	   Or drop the "resources" table before running
@@ -54,11 +57,12 @@ func main() {
 	routes.AuthRoutes(r, db)
 	routes.UsersRoutes(r, db)
 	routes.CategoriesRoutes(r)
+	routes.TutoringRoutes(r, db)
 
-    /* Print all registered routes */
-    for _, route := range r.Routes() {
-        log.Printf("Method: %s | Path: %s", route.Method, route.Path)
-    }
+	/* Print all registered routes */
+	for _, route := range r.Routes() {
+		log.Printf("Method: %s | Path: %s", route.Method, route.Path)
+	}
 
 	/* Specify the port to run your application and start server */
 	port := os.Getenv("PORT")

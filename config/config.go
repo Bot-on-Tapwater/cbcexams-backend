@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -19,6 +20,11 @@ import (
 Global variable that represents a database connection
 */
 var DB *gorm.DB
+
+/*
+Global variable that converts time to "Africa/Nairobi"
+*/
+var EAT *time.Location
 
 // ConnectDB establishes a connection to the PostgreSQL database using GORM.
 // It loads environment variables from a .env file to construct the Data Source Name (DSN)
@@ -77,4 +83,15 @@ func ConnectDB() *gorm.DB {
 	DB = db
 	fmt.Println("Database connected")
 	return DB
+}
+
+// InitTimezone initializes the EAT (East Africa Time) timezone by loading
+// the "Africa/Nairobi" location. If the timezone cannot be loaded, the
+// function will panic with an appropriate error message.
+func InitTimezone() {
+	var err error
+	EAT, err = time.LoadLocation("Africa/Nairobi")
+	if err != nil {
+		panic("Failed to load EAT timezone: " + err.Error())
+	}
 }

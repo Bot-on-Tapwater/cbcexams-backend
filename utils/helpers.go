@@ -31,5 +31,5 @@ func ParseUserIDFromString(c *gin.Context, userIDStr string) (uuid.UUID, bool) {
 		return uuid.UUID{}, false
 	}
 	return parsedUserID, true
-	
+
 }

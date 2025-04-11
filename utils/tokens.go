@@ -14,7 +14,8 @@ import (
 //   - length: The desired length of the random token in bytes.
 //
 // Returns:
-//   A hexadecimal string representation of the random token.
+//
+//	A hexadecimal string representation of the random token.
 func GenerateRandomToken(length int) string {
 	b := make([]byte, length)
 	if _, err := rand.Read(b); err != nil {

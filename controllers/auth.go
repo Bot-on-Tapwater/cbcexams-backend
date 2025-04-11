@@ -68,7 +68,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 // @Router       /login [post]
 func (ac *AuthController) Login(c *gin.Context) {
 	var credentials struct {
-		Email string `json:"email" binding:"required"`
+		Email    string `json:"email" binding:"required"`
 		Password string `json:"password" binding:"required"`
 	}
 
@@ -96,7 +96,7 @@ func (ac *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token":token})
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 // ForgotPassword handles the process of initiating a password reset for a user.
@@ -107,12 +107,14 @@ func (ac *AuthController) Login(c *gin.Context) {
 // The function performs the following steps:
 // 1. Validates the input JSON to ensure the email field is present and properly formatted.
 // 2. Searches for a user in the database with the provided email address.
-//    - If the email does not exist, it responds with a generic success message to avoid
-//      revealing whether the email is registered (security best practice).
+//   - If the email does not exist, it responds with a generic success message to avoid
+//     revealing whether the email is registered (security best practice).
+//
 // 3. Generates a secure password reset token and sets an expiration time for the token.
 // 4. Saves the token and expiration time to the user's record in the database.
 // 5. Sends a password reset email to the user containing the reset token.
-//    - If email sending fails, it responds with an internal server error.
+//   - If email sending fails, it responds with an internal server error.
+//
 // 6. Responds with a success message indicating that a reset link has been sent.
 //
 // Note: The actual implementation of token generation and email sending is handled
@@ -171,7 +173,7 @@ func (ac *AuthController) ForgotPassword(c *gin.Context) {
 // - 200 OK: If the password reset is successful.
 func (ac *AuthController) ResetPassword(c *gin.Context) {
 	var input struct {
-		Token	string `json:"token" binding:"required"`
+		Token       string `json:"token" binding:"required"`
 		NewPassword string `json:"new_password" binding:"required"`
 	}
 
@@ -220,7 +222,7 @@ func (ac *AuthController) Logout(c *gin.Context) {
 }
 
 // CheckAuth handles the authentication check for a user.
-// 
+//
 // This method is invoked after the JWTAuth middleware has validated the user's token.
 // It retrieves the user ID from the context, validates it, and fetches the user's details
 // from the database. If the user is authenticated and exists in the database, their
@@ -255,7 +257,6 @@ func (ac *AuthController) CheckAuth(c *gin.Context) {
 		return
 	}
 
-
 	var user models.User
 	if err := ac.DB.Select("id, email, first_name, last_name").First(&user, "id = ?", parsedUserID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
@@ -265,9 +266,9 @@ func (ac *AuthController) CheckAuth(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"isAuthenticated": true,
 		"user": gin.H{
-			"email": user.Email,
+			"email":     user.Email,
 			"firstName": user.FirstName,
-			"lastName": user.LastName,
+			"lastName":  user.LastName,
 		},
 	})
 }

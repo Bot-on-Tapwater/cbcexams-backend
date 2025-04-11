@@ -16,12 +16,12 @@ type UsersController struct {
 
 // Profile handles the retrieval of a user's profile based on the user ID
 // stored in the request context. It performs the following steps:
-// 1. Retrieves the `user_id` from the request context.
-// 2. Validates that the `user_id` is a string.
-// 3. Parses the `user_id` into a UUID format.
-// 4. Queries the database for a user with the corresponding UUID.
-// 5. Returns the user's profile as a JSON response if found, or an error
-//    message if the user is not found or the `user_id` is invalid.
+//  1. Retrieves the `user_id` from the request context.
+//  2. Validates that the `user_id` is a string.
+//  3. Parses the `user_id` into a UUID format.
+//  4. Queries the database for a user with the corresponding UUID.
+//  5. Returns the user's profile as a JSON response if found, or an error
+//     message if the user is not found or the `user_id` is invalid.
 //
 // Parameters:
 // - c (*gin.Context): The Gin context containing the request and response objects.
@@ -118,10 +118,10 @@ func (uc *UsersController) UpdateProfile(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Profile updated",
-		"user":gin.H{
+		"user": gin.H{
 			"firstName": user.FirstName,
-			"lastName": user.LastName,
-			"email": user.Email,
+			"lastName":  user.LastName,
+			"email":     user.Email,
 		},
 	})
 }
