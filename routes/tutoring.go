@@ -17,7 +17,7 @@ func TutoringRoutes(r *gin.Engine, db *gorm.DB) {
 		v1.GET("/requests", tutoringCtrl.GetTutorRequests)
 
 		/* Tutor Applications (Tutors) */
-		v1.POST("applications", tutoringCtrl.CreateTutorApplication)
-		v1.GET("applications", tutoringCtrl.GetTutorApplications)
+		v1.POST("/applications", tutoringCtrl.CreateTutorApplication)
+		v1.GET("/applications", tutoringCtrl.GetTutorApplications)
 	}
 }

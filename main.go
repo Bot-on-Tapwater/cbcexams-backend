@@ -58,6 +58,9 @@ func main() {
 	routes.UsersRoutes(r, db)
 	routes.CategoriesRoutes(r)
 	routes.TutoringRoutes(r, db)
+	routes.JobRoutes(r, db)
+	routes.WebDevRoutes(r, db)
+	routes.FeedbackRoutes(r, db)
 
 	/* Print all registered routes */
 	for _, route := range r.Routes() {

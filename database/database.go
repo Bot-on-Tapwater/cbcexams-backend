@@ -24,7 +24,7 @@ func InitializeDatabase() {
 
 	/* Run migrations */
 	fmt.Println("Running database migrations...")
-	err := db.AutoMigrate(&models.User{}, &models.TutorApplication{}, &models.TutorRequest{}) // Add more models here
+	err := db.AutoMigrate(&models.User{}, &models.TutorApplication{}, &models.TutorRequest{}, &models.SchoolJobListing{}, &models.TeacherJobProfile{}, &models.WebDevRequest{}, &models.Feedback{}) // Add more models here
 	if err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}
