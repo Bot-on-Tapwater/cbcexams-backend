@@ -9,12 +9,12 @@ import (
 )
 
 type Feedback struct {
-	ID             uuid.UUID      `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
-	Name string `gorm:"not null" json:"full_Name"`
-	Email string `gorm:"not null" json:"email"`
-	Message string `gorm:"type:text;not null" json:"message"`
-	CreatedAt      time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt      time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	Name      string    `gorm:"not null" json:"full_Name"`
+	Email     string    `gorm:"not null" json:"email"`
+	Message   string    `gorm:"type:text;not null" json:"message"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 // BeforeCreate is a GORM hook that is triggered before a new Feedback record
@@ -27,10 +27,10 @@ func (f *Feedback) BeforeCreate(tx *gorm.DB) (err error) {
 
 // BeforeUpdate is a GORM hook that is triggered before updating a Feedback record.
 // It updates the UpdatedAt field with the current time in the EAT (East Africa Time) timezone.
-// 
+//
 // Parameters:
 //   - tx: The GORM database transaction.
-// 
+//
 // Returns:
 //   - err: An error if any issues occur during the hook execution, otherwise nil.
 func (f *Feedback) BeforeUpdate(tx *gorm.DB) (err error) {

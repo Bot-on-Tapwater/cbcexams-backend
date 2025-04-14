@@ -11,15 +11,16 @@ import (
 )
 
 type User struct {
-	ID                   uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
-	Email                string    `gorm:"unique;not null" json:"email"`
-	Password             string    `gorm:"not null" json:"password"` /* Hidden in JSON responses */
-	FirstName            string    `gorm:"size:100" json:"first_name"`
-	LastName             string    `gorm:"size:100" json:"last_name"`
-	IsActive             bool      `gorm:"default:false" json:"is_active"`
-	LastLogin            time.Time `json:"last_login"`
-	PasswordResetToken   string    `gorm:"size:255" json:"password_reset_token"`
-	PasswordResetExpires time.Time `json:"password_reset_expires"`
+	ID                   uuid.UUID  `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	Email                string     `gorm:"unique;not null" json:"email"`
+	Password             string     `gorm:"not null" json:"password"` /* Hidden in JSON responses */
+	FirstName            string     `gorm:"size:100" json:"first_name"`
+	LastName             string     `gorm:"size:100" json:"last_name"`
+	IsActive             bool       `gorm:"default:false" json:"is_active"`
+	LastLogin            time.Time  `json:"last_login"`
+	PasswordResetToken   string     `gorm:"size:255" json:"password_reset_token"`
+	PasswordResetExpires time.Time  `json:"password_reset_expires"`
+	Bookmarks            []Bookmark `gorm:"foreignKey:UserID"`
 }
 
 // BeforeLastLogin is a GORM hook that is triggered before updating the LastLogin field of a User.

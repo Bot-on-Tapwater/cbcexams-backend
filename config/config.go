@@ -50,7 +50,7 @@ var EAT *time.Location
 //	before calling this function.
 func ConnectDB() *gorm.DB {
 	/* Load environment variables */
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}

@@ -16,7 +16,7 @@ type WebDevController struct {
 
 // CreateRequest handles the creation of a new web development request.
 // It expects a JSON payload in the request body that conforms to the WebDevRequest model.
-// 
+//
 // The function performs the following steps:
 // 1. Binds the incoming JSON payload to the WebDevRequest struct.
 // 2. Validates the input, ensuring that if the client type is "school", the organization name is provided.
@@ -29,11 +29,12 @@ type WebDevController struct {
 // - 201 Created: If the request is successfully saved.
 //
 // Example JSON payload:
-// {
-//   "ClientType": "school",
-//   "OrganizationName": "Example School",
-//   "OtherFields": "Other values specific to the WebDevRequest model"
-// }
+//
+//	{
+//	  "ClientType": "school",
+//	  "OrganizationName": "Example School",
+//	  "OtherFields": "Other values specific to the WebDevRequest model"
+//	}
 func (wdc *WebDevController) CreateRequest(c *gin.Context) {
 	var input models.WebDevRequest
 	if err := c.ShouldBindJSON(&input); err != nil {

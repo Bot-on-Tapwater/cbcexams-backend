@@ -3,67 +3,212 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	"strings"
+	"time"
 
 	"github.com/bot-on-tapwater/cbcexams-backend/models"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
-type WebCrawlerResourceController struct {
+type ResourceController struct {
 	DB *gorm.DB
 }
 
-// NewWebCrawlerResourceController creates a new instance of the controller
-func NewWebCrawlerResourceController(db *gorm.DB) *WebCrawlerResourceController {
-	return &WebCrawlerResourceController{DB: db}
+/* Response struct without ExtractedContent */
+type ResourceResponse struct {
+	ID                      uuid.UUID `json:"id"`
+	ParentURL               string    `json:"parent_url"`
+	GoogleDriveDownloadLink string    `json:"google_drive_download_link"`
+	Name                    string    `json:"name"`
+	RelativePath            string    `json:"relative_path"`
+	ParentDirectory         string    `json:"parent_directory"`
+	DjangoRelativePath      string    `json:"django_relative_path"`
+	GoogleCloudStorageLink  string    `json:"google_cloud_storage_link"`
+	CreatedAt               time.Time `json:"created_at"`
+	// Categories []string `json:"categories"`
+	// IsExtracted bool `json:"is_extracted"`
 }
 
-func (ctrl *WebCrawlerResourceController) GetAllWebCrawlerResources(c *gin.Context) {
+func (rc *ResourceController) GetResources(c *gin.Context) {
 	var resources []models.WebCrawlerResource
+	query := rc.DB.Model(&models.WebCrawlerResource{})
 
-	// Get pagination parameters from query
+	searchParams := []string{"q1", "q2", "q3", "q4"}
+	for _, param := range searchParams {
+		if value := c.Query(param); value != "" {
+			value = strings.ToLower(value)
+			query = query.Where(
+				"LOWER(name) LIKE ? OR "+
+					"LOWER(parent_url) LIKE ? OR "+
+					"LOWER(google_drive_download_link) LIKE ? OR "+
+					"LOWER(relative_path) LIKE ? OR "+
+					"LOWER(extracted_content) LIKE ? OR "+
+					"LOWER(google_cloud_storage_link) LIKE ?",
+				"%"+value+"%",
+				"%"+value+"%",
+				"%"+value+"%",
+				"%"+value+"%",
+				"%"+value+"%",
+				"%"+value+"%",
+			)
+		}
+	}
+
+	/* Parse pagination parameters */
 	page := c.DefaultQuery("page", "1")
-	limit := c.DefaultQuery("limit", "10")
+	limit := c.DefaultQuery("limit", "100")
 
-	// Convert page and limit to integers
-	pageInt, err := strconv.Atoi(page)
-	if err != nil || pageInt < 1 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page parameter"})
+	/* Count total records */
+	var totalRecords int64
+	if err := query.Count(&totalRecords).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to count resources"})
 		return
 	}
 
-	limitInt, err := strconv.Atoi(limit)
-	if err != nil || limitInt < 1 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit parameter"})
-		return
-	}
+	/* Apply pagination */
+	query = query.Scopes(Paginate(page, limit))
 
-	// Calculate offset
-	offset := (pageInt - 1) * limitInt
-
-	// Get total count of records
-	var totalCount int64
-	if err := ctrl.DB.Model(&models.WebCrawlerResource{}).Count(&totalCount).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch total count"})
-		return
-	}
-
-	// Fetch paginated records
-	if err := ctrl.DB.Limit(limitInt).Offset(offset).Find(&resources).Error; err != nil {
+	/* Execute query */
+	if err := query.Find(&resources).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch resources"})
 		return
 	}
 
-	// Calculate total pages
-	totalPages := (totalCount + int64(limitInt) - 1) / int64(limitInt) // Ceiling division
+	/* Calculate pagination metadata */
+	pageInt, _ := strconv.Atoi(page)
+	limitInt, _ := strconv.Atoi(limit)
+	totalPages := int((totalRecords + int64(limitInt) - 1) / int64(limitInt)) // Ceiling division
+	nextPage := pageInt + 1
+	if nextPage > totalPages {
+		nextPage = 0 // No next page
+	}
 
-	// Return the records as JSON
+	/* Convert to response format (excluding Extracted Content) */
+	var response []ResourceResponse
+	for _, r := range resources {
+		response = append(response, ResourceResponse{
+			ID:                      r.ID,
+			ParentURL:               r.ParentURL,
+			GoogleDriveDownloadLink: r.GoogleDriveDownloadLink,
+			Name:                    r.Name,
+			RelativePath:            r.RelativePath,
+			ParentDirectory:         r.ParentDirectory,
+			DjangoRelativePath:      r.DjangoRelativePath,
+			GoogleCloudStorageLink:  r.GoogleCloudStorageLink,
+			CreatedAt:               r.CreatedAt,
+			// Categories:              r.Categories,
+			// IsExtracted:             r.IsExtracted,
+		})
+	}
+
+	// c.JSON(http.StatusOK, gin.H{"data": response})
+	/* Return response with pagination metadata */
 	c.JSON(http.StatusOK, gin.H{
-		"data":        resources,
-		"page":        pageInt,
-		"limit":       limitInt,
-		"total_pages": totalPages,
-		"total_count": totalCount,
+		"data": response,
+		"pagination": gin.H{
+			"total_records": totalRecords,
+			"total_pages":   totalPages,
+			"current_page":  pageInt,
+			"next_page":     nextPage,
+			"limit":         limitInt,
+		},
+	})
+}
+
+/* Pagination scope */
+func Paginate(page, limit string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		pageInt := 1
+		limitInt := 10
+
+		// Parse page and limit from strings to integers
+		if p, err := strconv.Atoi(page); err == nil && p > 0 {
+			pageInt = p
+		}
+		if l, err := strconv.Atoi(limit); err == nil && l > 0 {
+			limitInt = l
+		}
+
+		offset := (pageInt - 1) * limitInt
+		return db.Offset(offset).Limit(limitInt)
+	}
+}
+
+func (rc *ResourceController) GetUniqeParentDirectories(c *gin.Context) {
+	var directories []string
+
+	/* Parse pagination parameters */
+	page := c.DefaultQuery("page", "1")
+	limit := c.DefaultQuery("limit", "100")
+
+	// Apply search query if provided
+	query := rc.DB.Model(&models.WebCrawlerResource{}).Distinct("parent_directory")
+	if search := c.Query("search"); search != "" {
+		search = strings.ToLower(search)
+		query = query.Where("LOWER(parent_directory) LIKE ?", "%"+search+"%")
+	}
+
+	// Count total records
+	var totalRecords int64
+	if err := query.Count(&totalRecords).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to count directories"})
+		return
+	}
+
+	/* Apply pagination */
+	// query := rc.DB.Model(&models.WebCrawlerResource{}).Distinct("parent_directory")
+	query = query.Scopes(Paginate(page, limit))
+
+	/* Fetch paginated data */
+	if err := query.Pluck("parent_directory", &directories).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch directories"})
+		return
+	}
+
+	/* Extract last segment after the last / */
+	uniqueSegments := make(map[string]bool)
+	var result []string
+
+	for _, dir := range directories {
+		/* Handle empty string */
+		if dir == "" {
+			continue
+		}
+
+		/* Remove trailing slash if exists */
+		cleanedDir := strings.TrimRight(dir, "/")
+
+		/* Split by / and get last segment */
+		parts := strings.Split(cleanedDir, "/")
+		lastSegment := parts[len(parts)-1]
+
+		/* Add to result if not already present */
+		if _, exists := uniqueSegments[lastSegment]; !exists {
+			uniqueSegments[lastSegment] = true
+			result = append(result, lastSegment)
+		}
+	}
+
+	/* Calculate pagination metadata */
+	pageInt, _ := strconv.Atoi(page)
+	limitInt, _ := strconv.Atoi(limit)
+	totalPages := int((totalRecords + int64(limitInt) - 1) / int64(limitInt)) // Ceiling division
+	nextPage := pageInt + 1
+	if nextPage > totalPages {
+		nextPage = 0 // No next page
+	}
+
+	/* Return response with pagination metadata */
+	c.JSON(http.StatusOK, gin.H{
+		"data": result,
+		"pagination": gin.H{
+			"total_records": totalRecords,
+			"total_pages":   totalPages,
+			"current_page":  pageInt,
+			"next_page":     nextPage,
+			"limit":         limitInt,
+		},
 	})
 }
