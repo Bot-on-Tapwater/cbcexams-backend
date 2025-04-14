@@ -20,3 +20,6 @@ pg_dump -U capeatlas -d cbcbackend \
 
 -- Not SQL command, it's a GoLang command for linting
 gofmt -s -w .
+
+-- More Go commands
+GOOS=linux GOARCH=amd64 go build -o cbcexams-backend main.go

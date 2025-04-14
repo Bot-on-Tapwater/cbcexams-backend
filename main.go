@@ -77,6 +77,7 @@ func main() {
 			"localhost:8080",
 			"127.0.0.1",
 			"127.0.0.1:8080",
+			"",
 		},
 
 		/* Redirects all HTTP requests to HTTPS if set to true. Disabled here for local development. */
