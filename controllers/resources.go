@@ -9,12 +9,20 @@ import (
 	"github.com/bot-on-tapwater/cbcexams-backend/models"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
 )
 
 type ResourceController struct {
 	DB *gorm.DB
 }
+
+/*
+Global cache instance
+Specify the default expiration time for cached items and
+the interval for purging expired items
+*/
+var resourceCache = cache.New(720*time.Minute, 720*time.Minute)
 
 /* Response struct without ExtractedContent */
 type ResourceResponse struct {
@@ -33,9 +41,29 @@ type ResourceResponse struct {
 
 func (rc *ResourceController) GetResources(c *gin.Context) {
 	var resources []models.WebCrawlerResource
+	var response []ResourceResponse
+
+	/* Generate a cache key based on search params and pagination */
+	searchParams := []string{"q1", "q2", "q3", "q4"}
+	cacheKey := "resources:"
+	for _, param := range searchParams {
+		cacheKey += param + "=" + c.Query(param) + "&"
+	}
+	cacheKey += "page=" + c.DefaultQuery("page", "1") + "&"
+	cacheKey += "limit=" + c.DefaultQuery("limit", "100")
+
+	/* Check if the result is already in the cache */
+	if cachedData, found := resourceCache.Get(cacheKey);
+	found {
+		/* Return the cached response */
+		c.JSON(http.StatusOK, cachedData)
+		return
+	}
+
+	/* Build the query */
 	query := rc.DB.Model(&models.WebCrawlerResource{})
 
-	searchParams := []string{"q1", "q2", "q3", "q4"}
+	// searchParams := []string{"q1", "q2", "q3", "q4"}
 	for _, param := range searchParams {
 		if value := c.Query(param); value != "" {
 			value = strings.ToLower(value)
@@ -86,7 +114,7 @@ func (rc *ResourceController) GetResources(c *gin.Context) {
 	}
 
 	/* Convert to response format (excluding Extracted Content) */
-	var response []ResourceResponse
+	// var response []ResourceResponse
 	for _, r := range resources {
 		response = append(response, ResourceResponse{
 			ID:                      r.ID,
@@ -103,18 +131,36 @@ func (rc *ResourceController) GetResources(c *gin.Context) {
 		})
 	}
 
-	// c.JSON(http.StatusOK, gin.H{"data": response})
-	/* Return response with pagination metadata */
-	c.JSON(http.StatusOK, gin.H{
+	/* Prepare the final response */
+	finalResponse := gin.H{
 		"data": response,
 		"pagination": gin.H{
 			"total_records": totalRecords,
-			"total_pages":   totalPages,
-			"current_page":  pageInt,
-			"next_page":     nextPage,
-			"limit":         limitInt,
+			"total_pages": int((totalRecords + int64(limitInt) - 1) / int64(limitInt)),
+			"current_page": pageInt,
+			"next_page": nextPage,
+			"limit": limitInt,
 		},
-	})
+	}
+
+	/* Store the result in the cache */
+	resourceCache.Set(cacheKey, finalResponse, cache.DefaultExpiration)
+
+	/* Return the response */
+	c.JSON(http.StatusOK, finalResponse)
+
+	// c.JSON(http.StatusOK, gin.H{"data": response})
+	/* Return response with pagination metadata */
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"data": response,
+	// 	"pagination": gin.H{
+	// 		"total_records": totalRecords,
+	// 		"total_pages":   totalPages,
+	// 		"current_page":  pageInt,
+	// 		"next_page":     nextPage,
+	// 		"limit":         limitInt,
+	// 	},
+	// })
 }
 
 /* Pagination scope */

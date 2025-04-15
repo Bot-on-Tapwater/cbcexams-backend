@@ -23,3 +23,6 @@ gofmt -s -w .
 
 -- More Go commands
 GOOS=linux GOARCH=amd64 go build -o cbcexams-backend main.go
+
+-- More Go commands
+go build -o cbcexams-backend
