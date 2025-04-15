@@ -12,5 +12,6 @@ func PaymentRoutes(r *gin.Engine) {
 	{
 		payment.POST("/initiate", paymentCtrl.InitiatePayment)
 		payment.GET("/status/:order_id", paymentCtrl.CheckPaymentStatus)
+		payment.GET("/ipn", paymentCtrl.HandleIPN)
 	}
 }
