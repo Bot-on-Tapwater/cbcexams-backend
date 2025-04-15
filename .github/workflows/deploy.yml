@@ -16,7 +16,7 @@ jobs:
     
     # Step 2: Setups SSH for secure communication with the VPS
     - name: Setup SSH
-      uses: webfactory/ssh-agent@v.0.5.3
+      uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.CBCEXAMS_VPS_PRIVATE_KEY }}
     
