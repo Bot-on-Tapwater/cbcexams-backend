@@ -1,0 +1,43 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main # Ensure this is the correct branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    # Step 2: Setups SSH for secure communication with the VPS
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v.0.5.3
+      with:
+        ssh-private-key: ${{ secrets.CBCEXAMS_VPS_PRIVATE_KEY }}
+    
+    # Step 3: Add the VPS to known hosts to avoid SSH prompts
+    - name: Add VPS to known hosts
+      run: |
+        ssh-keyscan -H 102.209.68.145 >> ~/.ssh/known_hosts
+    
+    # Step 4: Pull changes, rebuild the application, and restart the service
+    - name: Deploy and restart service
+      run: |
+        ssh bot-on-tapwater@102.209.68.145 << 'EOF'
+          # Navigate to the project directory
+          cd /home/bot-on-tapwater/cbcexams-backend
+
+          # Pull the latest changes from the repository
+          git pull origin main
+
+          # Rebuild the Go application
+          go build -o cbcexams-backend
+
+          # Restart the systemd service
+          sudo systemctl restart cbcexams.service
+        EOF

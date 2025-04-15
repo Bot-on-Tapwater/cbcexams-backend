@@ -63,7 +63,6 @@ func (rc *ResourceController) GetResources(c *gin.Context) {
 	/* Build the query */
 	query := rc.DB.Model(&models.WebCrawlerResource{})
 
-	// searchParams := []string{"q1", "q2", "q3", "q4"}
 	for _, param := range searchParams {
 		if value := c.Query(param); value != "" {
 			value = strings.ToLower(value)
@@ -114,7 +113,6 @@ func (rc *ResourceController) GetResources(c *gin.Context) {
 	}
 
 	/* Convert to response format (excluding Extracted Content) */
-	// var response []ResourceResponse
 	for _, r := range resources {
 		response = append(response, ResourceResponse{
 			ID:                      r.ID,
@@ -148,19 +146,6 @@ func (rc *ResourceController) GetResources(c *gin.Context) {
 
 	/* Return the response */
 	c.JSON(http.StatusOK, finalResponse)
-
-	// c.JSON(http.StatusOK, gin.H{"data": response})
-	/* Return response with pagination metadata */
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"data": response,
-	// 	"pagination": gin.H{
-	// 		"total_records": totalRecords,
-	// 		"total_pages":   totalPages,
-	// 		"current_page":  pageInt,
-	// 		"next_page":     nextPage,
-	// 		"limit":         limitInt,
-	// 	},
-	// })
 }
 
 /* Pagination scope */
@@ -185,13 +170,27 @@ func Paginate(page, limit string) func(db *gorm.DB) *gorm.DB {
 func (rc *ResourceController) GetUniqeParentDirectories(c *gin.Context) {
 	var directories []string
 
-	/* Parse pagination parameters */
+	/* Generate a cache key based on search query and pagination */
+	search := c.Query("search")
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "100")
+	cacheKey := "unique_directories:search=" + search + "&page=" + page + "&limit=" + limit
+
+	/* Check if the result is already in the cache */
+	if cachedData, found := resourceCache.Get(cacheKey);
+	found {
+		/* Return the cached response */
+		c.JSON(http.StatusOK, cachedData)
+		return
+	}
+
+	/* Parse pagination parameters */
+	// page := c.DefaultQuery("page", "1")
+	// limit := c.DefaultQuery("limit", "100")
 
 	// Apply search query if provided
 	query := rc.DB.Model(&models.WebCrawlerResource{}).Distinct("parent_directory")
-	if search := c.Query("search"); search != "" {
+	if search != "" {
 		search = strings.ToLower(search)
 		query = query.Where("LOWER(parent_directory) LIKE ?", "%"+search+"%")
 	}
@@ -246,15 +245,33 @@ func (rc *ResourceController) GetUniqeParentDirectories(c *gin.Context) {
 		nextPage = 0 // No next page
 	}
 
-	/* Return response with pagination metadata */
-	c.JSON(http.StatusOK, gin.H{
+	/* Prepare the final response */
+	finalResponse := gin.H{
 		"data": result,
 		"pagination": gin.H{
 			"total_records": totalRecords,
-			"total_pages":   totalPages,
-			"current_page":  pageInt,
-			"next_page":     nextPage,
-			"limit":         limitInt,
+			"total_pages": totalPages,
+			"current_page": pageInt,
+			"next_page": nextPage,
+			"limit": limitInt,
 		},
-	})
+	}
+
+	/* Store the result in the cache */
+	resourceCache.Set(cacheKey, finalResponse, cache.DefaultExpiration)
+
+	/* Return the response */
+	c.JSON(http.StatusOK, finalResponse)
+
+	/* Return response with pagination metadata */
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"data": result,
+	// 	"pagination": gin.H{
+	// 		"total_records": totalRecords,
+	// 		"total_pages":   totalPages,
+	// 		"current_page":  pageInt,
+	// 		"next_page":     nextPage,
+	// 		"limit":         limitInt,
+	// 	},
+	// })
 }
