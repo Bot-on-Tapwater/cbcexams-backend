@@ -58,7 +58,8 @@ func main() {
 	r := gin.Default()
 
 	/* Configure rate limiting */
-	rate, _ := limiter.NewRateFromFormatted("300-M") /* 300 requests per minute */
+	/* TODO: Reset after testing */
+	rate, _ := limiter.NewRateFromFormatted("3000000-M") /* 300 requests per minute */
 	store := memory.NewStore()
 	middleware := ginlimiter.NewMiddleware(limiter.New(store, rate))
 
