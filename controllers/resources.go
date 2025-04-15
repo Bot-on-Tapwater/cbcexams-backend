@@ -53,8 +53,7 @@ func (rc *ResourceController) GetResources(c *gin.Context) {
 	cacheKey += "limit=" + c.DefaultQuery("limit", "100")
 
 	/* Check if the result is already in the cache */
-	if cachedData, found := resourceCache.Get(cacheKey);
-	found {
+	if cachedData, found := resourceCache.Get(cacheKey); found {
 		/* Return the cached response */
 		c.JSON(http.StatusOK, cachedData)
 		return
@@ -134,10 +133,10 @@ func (rc *ResourceController) GetResources(c *gin.Context) {
 		"data": response,
 		"pagination": gin.H{
 			"total_records": totalRecords,
-			"total_pages": int((totalRecords + int64(limitInt) - 1) / int64(limitInt)),
-			"current_page": pageInt,
-			"next_page": nextPage,
-			"limit": limitInt,
+			"total_pages":   int((totalRecords + int64(limitInt) - 1) / int64(limitInt)),
+			"current_page":  pageInt,
+			"next_page":     nextPage,
+			"limit":         limitInt,
 		},
 	}
 
@@ -177,16 +176,11 @@ func (rc *ResourceController) GetUniqeParentDirectories(c *gin.Context) {
 	cacheKey := "unique_directories:search=" + search + "&page=" + page + "&limit=" + limit
 
 	/* Check if the result is already in the cache */
-	if cachedData, found := resourceCache.Get(cacheKey);
-	found {
+	if cachedData, found := resourceCache.Get(cacheKey); found {
 		/* Return the cached response */
 		c.JSON(http.StatusOK, cachedData)
 		return
 	}
-
-	/* Parse pagination parameters */
-	// page := c.DefaultQuery("page", "1")
-	// limit := c.DefaultQuery("limit", "100")
 
 	// Apply search query if provided
 	query := rc.DB.Model(&models.WebCrawlerResource{}).Distinct("parent_directory")
@@ -203,7 +197,6 @@ func (rc *ResourceController) GetUniqeParentDirectories(c *gin.Context) {
 	}
 
 	/* Apply pagination */
-	// query := rc.DB.Model(&models.WebCrawlerResource{}).Distinct("parent_directory")
 	query = query.Scopes(Paginate(page, limit))
 
 	/* Fetch paginated data */
@@ -250,10 +243,10 @@ func (rc *ResourceController) GetUniqeParentDirectories(c *gin.Context) {
 		"data": result,
 		"pagination": gin.H{
 			"total_records": totalRecords,
-			"total_pages": totalPages,
-			"current_page": pageInt,
-			"next_page": nextPage,
-			"limit": limitInt,
+			"total_pages":   totalPages,
+			"current_page":  pageInt,
+			"next_page":     nextPage,
+			"limit":         limitInt,
 		},
 	}
 
@@ -262,16 +255,4 @@ func (rc *ResourceController) GetUniqeParentDirectories(c *gin.Context) {
 
 	/* Return the response */
 	c.JSON(http.StatusOK, finalResponse)
-
-	/* Return response with pagination metadata */
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"data": result,
-	// 	"pagination": gin.H{
-	// 		"total_records": totalRecords,
-	// 		"total_pages":   totalPages,
-	// 		"current_page":  pageInt,
-	// 		"next_page":     nextPage,
-	// 		"limit":         limitInt,
-	// 	},
-	// })
 }

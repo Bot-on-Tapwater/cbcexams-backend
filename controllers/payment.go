@@ -1,7 +1,10 @@
 package controllers
 
 import (
+	"encoding/json"
+	"io"
 	"net/http"
+	"os"
 
 	"github.com/bot-on-tapwater/cbcexams-backend/pesapal"
 	"github.com/gin-gonic/gin"
@@ -99,4 +102,54 @@ func (pc *PaymentController) CheckPaymentStatus(c *gin.Context) {
 		"message": "Payment status retrieved",
 		"data":    statusResp,
 	})
+}
+
+func (pc *PaymentController) HandleIPN(c *gin.Context) {
+	/* Extract query parameters sent by Pesapal */
+	ipnData := c.Request.URL.Query()
+
+	/* Convert query parameters to a map for easier handling */
+	data := make(map[string]string)
+	for key, values := range ipnData {
+		if len(values) > 0 {
+			data[key] = values[0]
+		}
+	}
+
+	/* Define the JSON file path */
+	filePath := "/home/bot-on-tapwater/cbcexams-backend/ipn_notifications.json"
+
+	/* Read existing data from the file (if it exists) */
+	var existingData []map[string]string
+	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open IPN file", "details": err.Error()})
+		return
+	}
+	defer file.Close()
+
+	/* Decode existing JSON data (if any) */
+	decoder := json.NewDecoder(file)
+	if err := decoder.Decode(&existingData); err != nil && err != io.EOF {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to read IPN file", "details": err.Error()})
+		return
+	}
+
+	/* Append the new data to the existing data */
+	existingData = append(existingData, data)
+
+	/* Write the updated data back to the file */
+	file.Truncate(0) /* Clear the file */
+	file.Seek(0, 0)  /* Move the pointer to the beginning */
+	encoder := json.NewEncoder(file)
+	if err := encoder.Encode(existingData); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to write IPN file", "details": err.Error(),
+		})
+		return
+	}
+
+	/* Respond to PesaPal */
+	c.JSON(http.StatusOK, gin.H{"message": "IPN received and stored successfully"})
 }
