@@ -27,11 +27,11 @@ var resourceCache = cache.New(720*time.Minute, 720*time.Minute)
 /* Response struct without ExtractedContent */
 type ResourceResponse struct {
 	ID                      uuid.UUID `json:"id"`
-	ParentURL               string    `json:"parent_url"`
-	GoogleDriveDownloadLink string    `json:"google_drive_download_link"`
+	// ParentURL               string    `json:"parent_url"`
+	// GoogleDriveDownloadLink string    `json:"google_drive_download_link"`
 	Name                    string    `json:"name"`
-	RelativePath            string    `json:"relative_path"`
-	ParentDirectory         string    `json:"parent_directory"`
+	// RelativePath            string    `json:"relative_path"`
+	// ParentDirectory         string    `json:"parent_directory"`
 	DjangoRelativePath      string    `json:"django_relative_path"`
 	GoogleCloudStorageLink  string    `json:"google_cloud_storage_link"`
 	CreatedAt               time.Time `json:"created_at"`
@@ -115,11 +115,11 @@ func (rc *ResourceController) GetResources(c *gin.Context) {
 	for _, r := range resources {
 		response = append(response, ResourceResponse{
 			ID:                      r.ID,
-			ParentURL:               r.ParentURL,
-			GoogleDriveDownloadLink: r.GoogleDriveDownloadLink,
+			// ParentURL:               r.ParentURL,
+			// GoogleDriveDownloadLink: r.GoogleDriveDownloadLink,
 			Name:                    r.Name,
-			RelativePath:            r.RelativePath,
-			ParentDirectory:         r.ParentDirectory,
+			// RelativePath:            r.RelativePath,
+			// ParentDirectory:         r.ParentDirectory,
 			DjangoRelativePath:      r.DjangoRelativePath,
 			GoogleCloudStorageLink:  r.GoogleCloudStorageLink,
 			CreatedAt:               r.CreatedAt,

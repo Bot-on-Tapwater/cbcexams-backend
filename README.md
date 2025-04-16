@@ -97,6 +97,8 @@ To deploy:
 
 For more details, see the [Deployment Guide](#).
 
+Server metrics can be monitored at: [http://102.209.68.145:19999/](http://102.209.68.145:19999/)
+
 ---
 
 ## 🔐 API Endpoints

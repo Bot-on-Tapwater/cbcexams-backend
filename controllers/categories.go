@@ -51,13 +51,43 @@ func GetCategories(c *gin.Context) {
 		"High School":   {"Form 1", "Form 2", "Form 3", "Form 4"},
 	}
 
-	resourceTypes := map[string][]string{
-		"All Education Levels": {"Opener Exams", "Mid Term Exams", "End Term Exams", "Schemes of Work", "Lesson Plans", "Notes", "Assignments", "Topical Questions and Answers"},
-		"High School":          {"KCSE Papers", "County Mocks"},
-		"Upper Primary":        {"KPSEA Papers"},
-		"Pre-Primary":          {"KICD Approved Syllabus", "Competency Based Curriculum Design Materials"},
-		"Teacher":              {"Lesson Plans", "Syllabus", "Schemes of Works", "Study Guides", "Marking Schemes"},
+	resourceTypesEducationLevels := map[string][]string{
+		"All Education Levels": {"Opener Exam", "Mid Term Exam", "End Term Exam", "Schemes of Work", "Lesson Plan", "Notes", "Assignment", "Topic-tests ", "Lesson Plans", "Syllabus", "Schemes of Work", "Study Guide", "Marking Scheme", "Design-Material"},
+		"High School":          {"KCSE", "Mock"},
+		"Upper Primary":        {"KPSEA"},
+		"Teacher":              {"Lesson Plans", "Syllabus", "Schemes of Work", "Study Guide", "Marking Scheme", "Design-Material"},
 		"Misc":                 {"Assessment Book", "Record of Work", "CBC Assessment Rubric"},
+	}
+
+	resourceTypeCategories := map[string][]string{
+		"Exams and Past Papers": {
+			"Opener Exam",
+			"Mid Term Exam",
+			"End Term Exam",
+			"KCSE",
+			"Mock",
+			"KPSEA",
+			"Topic-tests",
+		},
+		"Teacher's Resources": {
+			"Schemes of Work",
+			"Lesson Plan",
+			"Syllabus",
+			"Study Guide",
+			"Marking Scheme",
+			"Design-Material",
+			"Record of Work",
+			"CBC Assessment Rubric",
+		},
+		"Notes": {
+			"Notes",
+			"Assignment",
+			"Study Guide", // included again for relevance
+		},
+		"Other": {
+			"Assessment Book",
+			"Design-Material", // repeated where fitting
+		},
 	}
 
 	subjects := map[string][]string{
@@ -68,5 +98,5 @@ func GetCategories(c *gin.Context) {
 		"Junior-Secondary": {"English", "Kiswahili", "Mathematics", "Integrated Science", "Health Education", "Pre-Technical Studies", "Social Studies", "History", "Geography", "Civics", "Business Studies", "Christian Religious Education", "Islamic Religious Education", "Hindu Religious Education", "Agriculuture", "Life Skills", "Computer Science", "Performing Arts", "Music", "Drama", "Visual Arts", "Art & Design", "French", "German", "Arabic", "Kenyan Sign Language"},
 	}
 
-	c.JSON(http.StatusOK, gin.H{"levels": levels, "education levels": educationLevels, "resource types": resourceTypes, "subjects": subjects})
+	c.JSON(http.StatusOK, gin.H{"levels": levels, "education levels": educationLevels, "resource types education level": resourceTypesEducationLevels, "resource types categories": resourceTypeCategories, "subjects": subjects})
 }
