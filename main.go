@@ -69,17 +69,18 @@ func main() {
 	/* CORS configuration */
 	r.Use(secure.New(secure.Config{
 		/* Specifies the list of allowed hostnames. Requests with a Host header not in this list will be rejected. */
-		// AllowedHosts: []string{
-		// 	"vercel.app",
-		// 	"*vercel.app",
-		// 	"cbcexams.com",
-		// 	"*cbcexams.com",
-		// 	"localhost",
-		// 	"localhost:8080",
-		// 	"127.0.0.1",
-		// 	"127.0.0.1:8080",
-		// 	"",
-		// },
+		AllowedHosts: []string{
+			"vercel.app",
+			"*vercel.app",
+			"cbcexams.com",
+			"*cbcexams.com",
+			"localhost",
+			"localhost:8080",
+			"127.0.0.1",
+			"127.0.0.1:8080",
+			"localhost:3000",
+			"",
+		},
 
 		/* Redirects all HTTP requests to HTTPS if set to true. Disabled here for local development. */
 		SSLRedirect: false,
