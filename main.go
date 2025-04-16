@@ -12,8 +12,10 @@ Import routes which contains the api endpoints routes
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/bot-on-tapwater/cbcexams-backend/config"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	/*
@@ -55,6 +57,15 @@ func main() {
 	/* Configure Gin */
 	gin.SetMode(gin.ReleaseMode) // Switch to gin.DebugMode in development
 	r := gin.Default()
+
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"https://cbcexams.com", "http://localhost:3000"}, // adjust accordingly
+		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	/* Configure rate limiting */
 	/* TODO: Reset after testing */
