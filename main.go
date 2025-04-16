@@ -25,9 +25,9 @@ import (
 	"github.com/bot-on-tapwater/cbcexams-backend/database"
 	"github.com/bot-on-tapwater/cbcexams-backend/routes"
 	"github.com/gin-contrib/secure"
-	"github.com/ulule/limiter/v3"
-	ginlimiter "github.com/ulule/limiter/v3/drivers/middleware/gin"
-	memory "github.com/ulule/limiter/v3/drivers/store/memory"
+	//"github.com/ulule/limiter/v3"
+	//ginlimiter "github.com/ulule/limiter/v3/drivers/middleware/gin"
+	//memory "github.com/ulule/limiter/v3/drivers/store/memory"
 )
 
 // main is the entry point of the application. It performs the following tasks:
@@ -59,12 +59,12 @@ func main() {
 
 	/* Configure rate limiting */
 	/* TODO: Reset after testing */
-	rate, _ := limiter.NewRateFromFormatted("3000000-M") /* 300 requests per minute */
-	store := memory.NewStore()
-	middleware := ginlimiter.NewMiddleware(limiter.New(store, rate))
+	//rate, _ := limiter.NewRateFromFormatted("3000000-M") /* 300 requests per minute */
+	//store := memory.NewStore()
+	//middleware := ginlimiter.NewMiddleware(limiter.New(store, rate))
 
 	/* Apply rate limiting middleware */
-	r.Use(middleware)
+	//r.Use(middleware)
 
 	/* CORS configuration */
 	r.Use(secure.New(secure.Config{
