@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -29,6 +30,8 @@ type AuthController struct {
 // - 500 Internal Server Error: If password hashing fails.
 // - 201 Created: If the user is successfully created.
 func (ac *AuthController) Register(c *gin.Context) {
+	log.Println("Register endpoint hit")
+
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -37,9 +40,12 @@ func (ac *AuthController) Register(c *gin.Context) {
 
 	fmt.Printf("Password before hashing: %s\n", user.Password)
 	if err := user.HashPassword(); err != nil {
+		log.Printf("Error binding JSON: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not hash password"})
 		return
 	}
+
+	log.Printf("Payload: %+v", user)
 
 	if err := ac.DB.Create(&user).Error; err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": "Email already exists"})
