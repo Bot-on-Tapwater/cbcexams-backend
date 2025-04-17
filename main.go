@@ -59,7 +59,11 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://cbcexams.com", "https://cbcexams.com/", "http://localhost:3000", "http://localhost:3000/", "https://backend.cbcexams.com",}, // adjust accordingly
+		AllowOrigins: []string{
+			"https://cbcexams.com",
+			"http://localhost:3000",
+			"https://backend.cbcexams.com",
+		},
 		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
