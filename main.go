@@ -62,6 +62,7 @@ func main() {
 		AllowOrigins: []string{
 			"https://cbcexams.com",
 			"http://localhost:3000",
+			"http://localhost:3001",
 			"https://backend.cbcexams.com",
 		},
 		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
