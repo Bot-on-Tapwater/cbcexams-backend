@@ -205,27 +205,26 @@ func (rc *ResourceController) GetUniqeParentDirectories(c *gin.Context) {
 		return
 	}
 
-	/* Extract last segment after the last / */
+	/* Define the prefix to remove */
+	prefix := "/home/bot-on-tapwater/projects/cbcexams/media/downloaded_files/"
+
+	/* Extract unique directories after removing the prefix */
 	uniqueSegments := make(map[string]bool)
 	var result []string
 
 	for _, dir := range directories {
-		/* Handle empty string */
-		if dir == "" {
+		/* Remove the prefix */
+		trimmedDir := strings.TrimPrefix(dir, prefix)
+
+		/* Skip if the result is empty after trimming */
+		if trimmedDir == "" {
 			continue
 		}
 
-		/* Remove trailing slash if exists */
-		cleanedDir := strings.TrimRight(dir, "/")
-
-		/* Split by / and get last segment */
-		parts := strings.Split(cleanedDir, "/")
-		lastSegment := parts[len(parts)-1]
-
 		/* Add to result if not already present */
-		if _, exists := uniqueSegments[lastSegment]; !exists {
-			uniqueSegments[lastSegment] = true
-			result = append(result, lastSegment)
+		if _, exists := uniqueSegments[trimmedDir]; !exists {
+			uniqueSegments[trimmedDir] = true
+			result = append(result, trimmedDir)
 		}
 	}
 

@@ -12,8 +12,8 @@ func FeedbackRoutes(r *gin.Engine, db *gorm.DB) {
 	v1 := r.Group("v1/api/feedback")
 
 	{
-		v1.POST("/", feedbackCtrl.SubmitFeedback)
-		v1.GET("/", feedbackCtrl.GetFeedback)
+		v1.POST("", feedbackCtrl.SubmitFeedback)
+		v1.GET("", feedbackCtrl.GetFeedback)
 
 	}
 }

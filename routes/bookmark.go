@@ -13,8 +13,8 @@ func BookmarkRoutes(r *gin.Engine, db *gorm.DB) {
 	protected := r.Group("/v1/api/bookmarks")
 	protected.Use(middleware.JWTAuth())
 	{
-		protected.POST("/", bookmarkCtrl.CreateBookmark)
+		protected.POST("", bookmarkCtrl.CreateBookmark)
 		protected.DELETE("/:resource_id", bookmarkCtrl.DeleteBookmark)
-		protected.GET("/", bookmarkCtrl.GetUserBookmarks)
+		protected.GET("", bookmarkCtrl.GetUserBookmarks)
 	}
 }

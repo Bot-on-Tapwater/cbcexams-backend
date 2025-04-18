@@ -11,7 +11,7 @@ func ResourceRoutes(r *gin.Engine, db *gorm.DB) {
 
 	resources := r.Group("v1/api/resources")
 	{
-		resources.GET("/", resourceCtrl.GetResources)
+		resources.GET("", resourceCtrl.GetResources)
 		resources.GET("/parent-directories", resourceCtrl.GetUniqeParentDirectories)
 	}
 }

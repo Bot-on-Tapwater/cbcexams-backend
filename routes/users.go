@@ -10,11 +10,11 @@ import (
 func UsersRoutes(r *gin.Engine, db *gorm.DB) {
 	usersController := controllers.UsersController{DB: db}
 
-	protected := r.Group("/v1/api/users/")
+	protected := r.Group("/v1/api/users")
 	protected.Use(middleware.JWTAuth())
 	{
 		protected.GET("/profile", usersController.Profile)
-		protected.GET("/", usersController.GetUsers)
+		protected.GET("", usersController.GetUsers)
 		protected.PATCH("/update-profile", usersController.UpdateProfile)
 	}
 }

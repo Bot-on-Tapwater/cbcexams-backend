@@ -18,7 +18,7 @@ func AuthRoutes(r *gin.Engine, db *gorm.DB) {
 		auth.POST("/reset-password", authController.ResetPassword)
 	}
 
-	protected := r.Group("/v1/auth/")
+	protected := r.Group("/v1/auth")
 	protected.Use(middleware.JWTAuth())
 	{
 		protected.POST("/logout", authController.Logout)
