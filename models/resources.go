@@ -25,16 +25,16 @@ import (
 // - IsExtracted: A boolean indicating whether the resource's content has been extracted.
 // - ExtractedContent: The extracted content of the resource, if available.
 type WebCrawlerResource struct {
-	ID                      uuid.UUID      `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
-	ParentURL               string         `gorm:"type:text"`
-	GoogleDriveDownloadLink string         `gorm:"type:text;uniqueIndex:web_crawler_resources_google_drive_download_link_key"`
-	Name                    string         `gorm:"type:text"`
-	RelativePath            string         `gorm:"type:text"`
-	ParentDirectory         string         `gorm:"type:text"`
-	DjangoRelativePath      string         `gorm:"type:text;uniqueIndex:web_crawler_resources_django_relative_path_key"`
-	GoogleCloudStorageLink  string         `gorm:"type:text"`
-	CreatedAt               time.Time      `gorm:"not null"`
-	Categories              pq.StringArray `gorm:"type:varchar(255)[]"` // Requires github.com/lib/pq
-	IsExtracted             bool
-	ExtractedContent        string `gorm:"type:text"`
+	ID                      uuid.UUID      `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
+	ParentURL               string         `gorm:"type:text" json:"parent_url"`
+	GoogleDriveDownloadLink string         `gorm:"type:text;uniqueIndex:web_crawler_resources_google_drive_download_link_key" json:"google_drive_download_link"`
+	Name                    string         `gorm:"type:text" json:"name"`
+	RelativePath            string         `gorm:"type:text" json:"relative_path"`
+	ParentDirectory         string         `gorm:"type:text" json:"parent_directory"`
+	DjangoRelativePath      string         `gorm:"type:text;uniqueIndex:web_crawler_resources_django_relative_path_key" json:"django_relative_path"`
+	GoogleCloudStorageLink  string         `gorm:"type:text" json:"google_cloud_storage_link"`
+	CreatedAt               time.Time      `gorm:"not null" json:"created_at"`
+	Categories              pq.StringArray `gorm:"type:varchar(255)[]" json:"categories"` // Requires github.com/lib/pq
+	IsExtracted             bool           `json:"is_extracted"`
+	ExtractedContent        string         `gorm:"type:text" json:"extracted_content"`
 }
