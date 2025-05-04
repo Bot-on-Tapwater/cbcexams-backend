@@ -61,6 +61,7 @@ func main() {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
 			"https://cbcexams.com",
+			"https://www.cbcexams.com",
 			"http://localhost:3000",
 			"http://localhost:3001",
 			"https://backend.cbcexams.com",
