@@ -100,3 +100,4 @@ func GetCategories(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"levels": levels, "education levels": educationLevels, "resource types education level": resourceTypesEducationLevels, "resource types categories": resourceTypeCategories, "subjects": subjects})
 }
+
