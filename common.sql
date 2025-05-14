@@ -2,7 +2,7 @@
 psql -U capeatlas -d cbcbackend -f ~/resources.sql
 
 -- Create SQL dump without creating table
-pg_dump -U capeatlas -d cbcbackend \
+pg_dump -U capeatlas -d cbcbexams \
   --data-only \
   --no-owner \
   --inserts \
