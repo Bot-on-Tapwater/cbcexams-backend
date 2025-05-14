@@ -67,7 +67,7 @@ func (rc *ResourceController) GetResources(c *gin.Context) {
 			value = strings.ToLower(value)
 			query = query.Where(
 				"LOWER(name) LIKE ? OR "+
-					"LOWER(parent_url) LIKE ? OR "+
+					"LOWER(parent_directory) LIKE ? OR "+
 					"LOWER(google_drive_download_link) LIKE ? OR "+
 					"LOWER(relative_path) LIKE ? OR "+
 					"LOWER(extracted_content) LIKE ? OR "+
