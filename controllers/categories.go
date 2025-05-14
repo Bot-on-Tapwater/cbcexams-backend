@@ -26,13 +26,13 @@ func GetCategories(c *gin.Context) {
 
 	/* Make these changes */
 	/*
-	Opener => opener
-	Mid-Term => Mid-Term
-	End-Term => End-Term
-	Lesson-Plan => Lesson-Plan
-	Test => Test
-	Guide => Guide
-	Assessment Rubric => Assessment Rubric
+		Opener => opener
+		Mid-Term => Mid-Term
+		End-Term => End-Term
+		Lesson-Plan => Lesson-Plan
+		Test => Test
+		Guide => Guide
+		Assessment Rubric => Assessment Rubric
 	*/
 	levels := []string{
 		"Grade 9",
@@ -106,10 +106,10 @@ func GetCategories(c *gin.Context) {
 	}
 
 	subjects := map[string][]string{
-		"High School":      {"Mathematics", "English", "Kiswahili", "Biology", "Chemistry", "Physics", "History & Government", "Geography", "Christian Religious Education", "Islamic Religious Education", "Hindu Religious Education", "Business Studies", "Agriculture", "Computer Studies", "Home Science", "Art & Design", "Music", "French", "German", "Arabic", "Aviation Technology", "Woodwork", "Metalwork"},
-		"Pre-Primary":      {"Language Activities", "English", "Kiswahili", "Mathematical Activities", "Environmental Activities", "Psychomotor & Creative Activities", "Art", "Music", "Movement", "Christian Religious Education", "Islamic Religious Education", "Hindu Religious Education", "Pastoral Instruction"},
-		"Lower Primary":    {"English", "Kiswahili", "Mathematics", "Environmental Activities", "Hygiene & Nutrition", "Christian Religious Education", "Islamic Religious Education", "Hindu Religious Education", "Movement & Creative Arts", "Music", "Art", "Physical Education"},
-		"Upper Primary":    {"English", "Kiswahili", "Mathematics", "Science & Technology", "Social Studies", "History", "Geography", "Citizenship", "Christian Religious Education", "Islamic Religious Education", "Hindu Religious Education"},
+		"High School":   {"Mathematics", "English", "Kiswahili", "Biology", "Chemistry", "Physics", "History & Government", "Geography", "Christian Religious Education", "Islamic Religious Education", "Hindu Religious Education", "Business Studies", "Agriculture", "Computer Studies", "Home Science", "Art & Design", "Music", "French", "German", "Arabic", "Aviation Technology", "Woodwork", "Metalwork"},
+		"Pre-Primary":   {"Language Activities", "English", "Kiswahili", "Mathematical Activities", "Environmental Activities", "Psychomotor & Creative Activities", "Art", "Music", "Movement", "Christian Religious Education", "Islamic Religious Education", "Hindu Religious Education", "Pastoral Instruction"},
+		"Lower Primary": {"English", "Kiswahili", "Mathematics", "Environmental Activities", "Hygiene & Nutrition", "Christian Religious Education", "Islamic Religious Education", "Hindu Religious Education", "Movement & Creative Arts", "Music", "Art", "Physical Education"},
+		"Upper Primary": {"English", "Kiswahili", "Mathematics", "Science & Technology", "Social Studies", "History", "Geography", "Citizenship", "Christian Religious Education", "Islamic Religious Education", "Hindu Religious Education"},
 		"Junior School": {"English", "Kiswahili", "Mathematics", "Integrated Science", "Health Education", "Pre-Technical Studies", "Social Studies", "History", "Geography", "Civics", "Business Studies", "Christian Religious Education", "Islamic Religious Education", "Hindu Religious Education", "Agriculuture", "Life Skills", "Computer Science", "Performing Arts", "Music", "Drama", "Visual Arts", "Art & Design", "French", "German", "Arabic", "Kenyan Sign Language"},
 		"Senior School": {"English", "Kiswahili", "Mathematics", "Integrated Science", "Health Education", "Pre-Technical Studies", "Social Studies", "History", "Geography", "Civics", "Business Studies", "Christian Religious Education", "Islamic Religious Education", "Hindu Religious Education", "Agriculuture", "Life Skills", "Computer Science", "Performing Arts", "Music", "Drama", "Visual Arts", "Art & Design", "French", "German", "Arabic", "Kenyan Sign Language"},
 	}
